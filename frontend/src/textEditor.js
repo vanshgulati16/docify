@@ -1,26 +1,31 @@
-import React from 'react'
-import { useEffect, useRef } from 'react';
+import React, { useCallback } from 'react'
 import Quill from 'quill';
 import "quill/dist/quill.snow.css";
 
+const TOOLBAR_OPTIONS = [
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [{ font: [] }],
+  [{ list: "ordered" }, { list: "bullet" }],
+  ["bold", "italic", "underline"],
+  [{ color: [] }, { background: [] }],
+  [{ script: "sub" }, { script: "super" }],
+  [{ align: [] }],
+  ["image", "blockquote", "code-block"],
+  ["clean"],
+]
 
 export default function TextEditor() {
-    // to make the textedior inside the div with id = "Container-editor"
-    const wrapperRef = useRef();
-    // making a texteditor which would have different features like bold, italic, underline, etc.
-    useEffect(() => {
-      const editor = document.createElement('div');
-      wrapperRef.current.append(editor);
-      new Quill(editor, {theme: 'snow'});
+  // to make the textedior inside the div with id = "Container-editor"
+  const wrapperRef = useCallback(wrapper => {
+    if(wrapper == null) return;
+    wrapper.innerHTML = "";
+    const editor = document.createElement('div');
+    wrapper.append(editor);
+    new Quill(editor, {theme: 'snow', modules: {toolbar: TOOLBAR_OPTIONS}});
+  }, []);
 
-    // to not make the texteditor again and again, we use this return function
-      return () => {
-        wrapperRef.current.innerHTML = "";
-    }
-    }, []); 
-
-    return (
-      <div id= "Container-editor" ref = {wrapperRef}></div>
-    )
+  return (
+    <div className= "container-editor" ref = {wrapperRef}></div>
+  )
 }
 
